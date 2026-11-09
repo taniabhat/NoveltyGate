@@ -1,0 +1,1676 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>NoveltyGate Lab · Edge Wildlife Gating Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --card-subtle: #f1f5f9;
+      --border: #e2e8f0;
+      --border-hover: #cbd5e1;
+      --border-focus: #059669;
+      --fg: #0f172a;
+      --fg-secondary: #475569;
+      --fg-muted: #64748b;
+      --primary: #059669;
+      --primary-hover: #047857;
+      --primary-subtle: #ecfdf5;
+      --primary-border: #a7f3d0;
+      --ring: rgba(5, 150, 105, 0.18);
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+      --radius-sm: 6px;
+      --radius: 10px;
+      --radius-lg: 14px;
+      --radius-full: 9999px;
+      --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--fg);
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      padding-bottom: 60px;
+    }
+
+    /* Layout & Header */
+    .app-header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      box-shadow: var(--shadow-sm);
+    }
+    .header-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 18px;
+      box-shadow: 0 2px 4px rgba(5, 150, 105, 0.25);
+    }
+    .brand-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--fg);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      background: #dbeafe;
+      color: #1d4ed8;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+    .header-meta {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 12px;
+      color: var(--fg-secondary);
+    }
+    .meta-chip {
+      background: var(--card-subtle);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+    .meta-chip .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1180px;
+      margin: 24px auto 0;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    /* Hero / Description Card */
+    .hero-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 22px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .hero-text {
+      max-width: 780px;
+    }
+    .hero-text h2 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--fg);
+      margin-bottom: 4px;
+    }
+    .hero-text p {
+      font-size: 13px;
+      color: var(--fg-secondary);
+      line-height: 1.55;
+    }
+    .species-tags {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    .species-tag {
+      font-size: 11px;
+      font-weight: 600;
+      background: #f1f5f9;
+      color: #334155;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      border: 1px solid #e2e8f0;
+    }
+
+    /* KPI Summary Cards Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .kpi-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .kpi-card:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+    }
+    .kpi-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--fg-muted);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .kpi-value {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--fg);
+      font-family: var(--sans);
+    }
+    .kpi-sub {
+      font-size: 12px;
+      color: var(--fg-secondary);
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .kpi-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: var(--radius-full);
+      background: #ecfdf5;
+      color: #059669;
+    }
+
+    /* Card Panels */
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+    .panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .panel-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--fg);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel-desc {
+      font-size: 12px;
+      color: var(--fg-secondary);
+      font-weight: normal;
+    }
+
+    /* Controls & Presets */
+    .presets-bar {
+      padding: 12px 20px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .presets-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--fg-muted);
+      margin-right: 4px;
+    }
+    .preset-btn {
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--fg-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .preset-btn:hover {
+      background: #f1f5f9;
+      border-color: var(--border-hover);
+      color: var(--fg);
+      transform: translateY(-1px);
+    }
+    .preset-btn.active {
+      background: var(--primary-subtle);
+      border-color: var(--primary-border);
+      color: var(--primary);
+    }
+
+    .controls-body {
+      padding: 20px;
+    }
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .field-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--fg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .field-unit {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--fg-muted);
+    }
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    input[type="number"], select {
+      font-family: var(--sans);
+      width: 100%;
+      height: 38px;
+      padding: 0 10px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--fg);
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: all 0.15s ease;
+      outline: none;
+    }
+    input[type="number"]:hover, select:hover {
+      border-color: var(--border-hover);
+    }
+    input[type="number"]:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--ring);
+    }
+
+    /* Segmented pill control for Dimension */
+    .segmented-control {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #f1f5f9;
+      padding: 3px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      gap: 2px;
+      height: 38px;
+    }
+    .seg-btn {
+      font-family: var(--sans);
+      border: none;
+      background: transparent;
+      border-radius: var(--radius-sm);
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--fg-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .seg-btn:hover {
+      color: var(--fg);
+    }
+    .seg-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      font-weight: 700;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+
+    /* Actions Bar */
+    .controls-actions {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .left-actions, .right-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--fg);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow-sm);
+      user-select: none;
+    }
+    .btn:hover {
+      background: #f8fafc;
+      border-color: var(--border-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+    }
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      color: #ffffff;
+      border-color: #059669;
+      box-shadow: 0 2px 4px rgba(5, 150, 105, 0.25);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #047857 0%, #059669 100%);
+      border-color: #047857;
+      color: #ffffff;
+      box-shadow: 0 4px 8px rgba(5, 150, 105, 0.3);
+    }
+    .btn-subtle {
+      background: #f1f5f9;
+      border-color: #e2e8f0;
+      color: var(--fg-secondary);
+      box-shadow: none;
+    }
+    .btn-subtle:hover {
+      background: #e2e8f0;
+      color: var(--fg);
+      box-shadow: none;
+    }
+
+    /* Auto-run toggle */
+    .toggle-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--fg-secondary);
+      cursor: pointer;
+      user-select: none;
+    }
+    .toggle-wrap input[type="checkbox"] {
+      cursor: pointer;
+      accent-color: var(--primary);
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Status indicator */
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--fg-muted);
+    }
+    .status-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+    .status-pulse.loading {
+      background: #f59e0b;
+      animation: pulseAnim 1.2s infinite;
+    }
+    @keyframes pulseAnim {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+    }
+
+    /* Interactive Table */
+    .table-responsive {
+      overflow-x: auto;
+      width: 100%;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: right;
+      font-size: 13px;
+    }
+    th {
+      background: #f8fafc;
+      color: var(--fg-secondary);
+      font-weight: 600;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s ease, color 0.15s ease;
+      white-space: nowrap;
+    }
+    th:hover {
+      background: #f1f5f9;
+      color: var(--fg);
+    }
+    th:first-child, td:first-child {
+      text-align: left;
+      padding-left: 20px;
+    }
+    th:last-child, td:last-child {
+      padding-right: 20px;
+    }
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--fg);
+      font-feature-settings: "tnum";
+      white-space: nowrap;
+      transition: background 0.1s ease;
+    }
+    tbody tr {
+      transition: background 0.15s ease;
+    }
+    tbody tr:hover {
+      background: #f8fafc;
+    }
+    tbody tr.highlighted {
+      background: #ecfdf5 !important;
+    }
+    tbody tr.full-controller-row {
+      font-weight: 600;
+    }
+    .sort-icon {
+      display: inline-block;
+      margin-left: 4px;
+      font-size: 10px;
+      color: var(--fg-muted);
+    }
+    .controller-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+    .ctrl-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .winner-tag {
+      font-size: 10px;
+      font-weight: 700;
+      background: #dcfce7;
+      color: #15803d;
+      padding: 1px 6px;
+      border-radius: var(--radius-full);
+      margin-left: 6px;
+    }
+
+    /* Inline mini bar */
+    .bar-cell {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    .mini-track {
+      width: 55px;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      display: inline-block;
+    }
+    .mini-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      background: var(--primary);
+    }
+    .mini-fill.warning {
+      background: #ef4444;
+    }
+
+    /* Trace Chart Section */
+    .chart-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .cam-nav-group {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: #ffffff;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .cam-nav-btn {
+      background: transparent;
+      border: none;
+      padding: 7px 11px;
+      cursor: pointer;
+      color: var(--fg-secondary);
+      font-size: 12px;
+      font-weight: 700;
+      transition: all 0.15s ease;
+    }
+    .cam-nav-btn:hover {
+      background: #f1f5f9;
+      color: var(--fg);
+    }
+    .cam-select {
+      border: none !important;
+      border-left: 1px solid var(--border) !important;
+      border-right: 1px solid var(--border) !important;
+      border-radius: 0 !important;
+      height: 34px !important;
+      font-size: 12.5px !important;
+      font-weight: 600 !important;
+      padding: 0 10px !important;
+      box-shadow: none !important;
+    }
+
+    /* Interactive Legend Chips */
+    .legend-bar {
+      padding: 12px 20px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .legend-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 11px;
+      border-radius: var(--radius-full);
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--fg-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .legend-chip:hover {
+      background: #ffffff;
+      border-color: var(--border-hover);
+      color: var(--fg);
+      box-shadow: var(--shadow-sm);
+      transform: translateY(-1px);
+    }
+    .legend-chip.active {
+      background: #ffffff;
+      border-color: currentColor;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+    }
+    .legend-chip.dimmed {
+      opacity: 0.35;
+    }
+    .legend-color-box {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+    }
+
+    /* SVG Chart Viewport */
+    .chart-container {
+      position: relative;
+      padding: 16px 20px 24px;
+      background: #ffffff;
+    }
+    .chart-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      overflow: visible;
+      cursor: crosshair;
+    }
+
+    /* Chart Hover Floating Tooltip */
+    .chart-tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      box-shadow: var(--shadow-lg);
+      font-size: 12px;
+      z-index: 50;
+      opacity: 0;
+      transform: translate(-50%, -100%);
+      transition: opacity 0.1s ease, transform 0.1s ease;
+      min-width: 170px;
+    }
+    .chart-tooltip.visible {
+      opacity: 1;
+    }
+    .tooltip-header {
+      font-weight: 700;
+      color: var(--fg);
+      margin-bottom: 6px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+    }
+    .tooltip-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 3px 0;
+      font-feature-settings: "tnum";
+    }
+    .tooltip-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--fg-secondary);
+      font-size: 11.5px;
+    }
+    .tooltip-value {
+      font-weight: 700;
+      color: var(--fg);
+    }
+
+    /* Footer Info */
+    .footer-note {
+      text-align: center;
+      font-size: 12px;
+      color: var(--fg-muted);
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 10px auto 0;
+    }
+
+    @media (max-width: 768px) {
+      .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .controls-grid {
+        grid-template-columns: 1fr;
+      }
+      .controls-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .left-actions, .right-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .btn {
+        flex: 1;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Header -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand-wrap">
+        <div class="brand-logo">N</div>
+        <div>
+          <div class="brand-title">NoveltyGate Lab</div>
+          <div style="font-size: 12px; color: var(--fg-muted);">Budget-Aware Novelty Gating for Edge Wildlife Cameras</div>
+        </div>
+      </div>
+      <div class="header-meta">
+        <div class="meta-chip">
+          <span class="dot"></span>
+          <span id="modelEncoder">DINOv2-small (CLS)</span>
+        </div>
+        <div class="meta-chip">
+          <span id="camsCountBadge">24 Cameras</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Hero Context Banner -->
+    <div class="hero-card">
+      <div class="hero-text">
+        <h2>Snapshot Serengeti Edge Simulation</h2>
+        <p>
+          Simulates battery and bandwidth gating on real camera-trap nodes replaying Snapshot Serengeti test locations.
+          Embeddings identify rare species so high-value frames are prioritized before battery or daily transmission budgets deplete.
+        </p>
+        <div class="species-tags">
+          <span class="species-tag">🐆 Cheetah</span>
+          <span class="species-tag">🦤 Ostrich</span>
+          <span class="species-tag">🐾 Serval</span>
+          <span class="species-tag">🦊 Jackal</span>
+          <span class="species-tag" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;">64 Prototypes</span>
+        </div>
+      </div>
+      <div>
+        <button class="btn btn-subtle" id="exportBtn" title="Download current simulation results as JSON">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          Export Data
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Metric KPI Summary Cards -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-title">
+          <span>Novelty AUROC</span>
+          <span class="kpi-badge" id="kpiDimLabel">64d</span>
+        </div>
+        <div class="kpi-value" id="kpiAuroc">0.766</div>
+        <div class="kpi-sub">Test set separation performance</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-title">
+          <span>Full Controller Recall</span>
+          <span class="kpi-badge">Novel Species</span>
+        </div>
+        <div class="kpi-value" id="kpiRecall" style="color: var(--primary);">--</div>
+        <div class="kpi-sub" id="kpiRecallSub">Percent of rare animal events captured</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-title">
+          <span>Outage Prevention</span>
+          <span class="kpi-badge" style="background:#fef3c7; color:#b45309;">Battery Health</span>
+        </div>
+        <div class="kpi-value" id="kpiOutage">--</div>
+        <div class="kpi-sub" id="kpiOutageSub">Off-days vs naive "Send Everything"</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-title">
+          <span>Bandwidth Efficiency</span>
+          <span class="kpi-badge" style="background:#ede9fe; color:#6d28d9;">Quota</span>
+        </div>
+        <div class="kpi-value" id="kpiBandwidth">--</div>
+        <div class="kpi-sub">Bytes sent / day vs daily budget</div>
+      </div>
+    </section>
+
+    <!-- Simulation Parameters Panel -->
+    <section class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+            Simulation Parameters & Scenarios
+          </div>
+          <div class="panel-desc">Adjust node constraints and observation rates or select a ready-made scenario.</div>
+        </div>
+        <div class="status-indicator">
+          <span class="status-pulse" id="statusDot"></span>
+          <span id="statusText">Ready</span>
+        </div>
+      </div>
+
+      <!-- Quick Scenario Preset Pills -->
+      <div class="presets-bar">
+        <span class="presets-label">Scenarios:</span>
+        <button class="preset-btn active" data-preset="default">Default (Balanced)</button>
+        <button class="preset-btn" data-preset="low-solar">Winter / Low Solar</button>
+        <button class="preset-btn" data-preset="tight-budget">Tight Quota (60 B/d)</button>
+        <button class="preset-btn" data-preset="high-activity">High Activity (48 epd)</button>
+      </div>
+
+      <div class="controls-body">
+        <div class="controls-grid" id="controlsGrid">
+          
+          <!-- Embedding Bytes (Segmented Control) -->
+          <div class="field-group" style="grid-column: span 1;">
+            <div class="field-label">
+              <span>Embedding Size</span>
+              <span class="field-unit" id="aurocBadge">AUROC: 0.766</span>
+            </div>
+            <div class="segmented-control" id="dimSegmented">
+              <button class="seg-btn" data-dim="8">8d</button>
+              <button class="seg-btn" data-dim="16">16d</button>
+              <button class="seg-btn" data-dim="32">32d</button>
+              <button class="seg-btn active" data-dim="64">64d</button>
+            </div>
+          </div>
+
+          <!-- Daily Byte Budget -->
+          <div class="field-group">
+            <div class="field-label">
+              <span>Daily Byte Budget</span>
+              <span class="field-unit">bytes/day</span>
+            </div>
+            <input id="budget" type="number" value="200" min="10" max="10000" step="10">
+          </div>
+
+          <!-- Target Send Rate -->
+          <div class="field-group">
+            <div class="field-label">
+              <span>Target Send Rate</span>
+              <span class="field-unit">% of triggers</span>
+            </div>
+            <input id="rate" type="number" value="12" min="1" max="100" step="1">
+          </div>
+
+          <!-- Events Per Day -->
+          <div class="field-group">
+            <div class="field-label">
+              <span>Events Per Day</span>
+              <span class="field-unit">triggers/day</span>
+            </div>
+            <input id="epd" type="number" value="24" min="1" max="200" step="1">
+          </div>
+
+          <!-- Battery Capacity -->
+          <div class="field-group">
+            <div class="field-label">
+              <span>Battery Capacity</span>
+              <span class="field-unit">capacity units</span>
+            </div>
+            <input id="cap" type="number" value="1500" min="100" max="10000" step="50">
+          </div>
+
+          <!-- Solar Per Day -->
+          <div class="field-group">
+            <div class="field-label">
+              <span>Solar Harvest</span>
+              <span class="field-unit">harvest/day</span>
+            </div>
+            <input id="solar" type="number" value="130" min="0" max="2000" step="10">
+          </div>
+
+          <!-- Random Seed -->
+          <div class="field-group">
+            <div class="field-label">
+              <span>Simulation Seed</span>
+              <span class="field-unit">reproducibility</span>
+            </div>
+            <input id="seed" type="number" value="1" min="1" max="99999" step="1">
+          </div>
+
+        </div>
+
+        <div class="controls-actions">
+          <div class="left-actions">
+            <button class="btn btn-primary" id="runBtn">
+              <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Run Simulation
+            </button>
+            <button class="btn" id="resetBtn">Reset Defaults</button>
+          </div>
+          <div class="right-actions">
+            <label class="toggle-wrap">
+              <input type="checkbox" id="autoUpdate" checked>
+              Auto-simulate on edit
+            </label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controller Performance Table Panel -->
+    <section class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+            Controller Benchmark Comparison
+          </div>
+          <div class="panel-desc">Click any header to sort. Hover on a controller row to highlight its battery trace below.</div>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table id="benchmarkTable">
+          <thead>
+            <tr>
+              <th data-col="name">Controller <span class="sort-icon">⇅</span></th>
+              <th data-col="sent_per_day">Sent / Day <span class="sort-icon">⇅</span></th>
+              <th data-col="bytes_per_day">Bytes / Day <span class="sort-icon">⇅</span></th>
+              <th data-col="novel_recall">Novel Recall <span class="sort-icon">⇅</span></th>
+              <th data-col="novel_share">Novel Precision <span class="sort-icon">⇅</span></th>
+              <th data-col="off_pct">Blackout Days <span class="sort-icon">⇅</span></th>
+              <th data-col="budget_out_pct">Budget Exhausted <span class="sort-icon">⇅</span></th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <!-- Dynamic rows populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Battery Trace Chart Panel -->
+    <section class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            Simulated Node Battery Trajectory
+          </div>
+          <div class="panel-desc">Hover over the chart to inspect daily battery percentages across controllers.</div>
+        </div>
+
+        <div class="chart-controls">
+          <div class="cam-nav-group">
+            <button class="cam-nav-btn" id="prevCamBtn" title="Previous Camera">◀</button>
+            <select id="camSelect" class="cam-select"></select>
+            <button class="cam-nav-btn" id="nextCamBtn" title="Next Camera">▶</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Legend Chips (filter & isolate) -->
+      <div class="legend-bar" id="legendContainer">
+        <!-- Dynamic chips generated via JS -->
+      </div>
+
+      <!-- SVG Chart Viewport -->
+      <div class="chart-container" id="chartWrapper">
+        <svg id="batteryChart" class="chart-svg" viewBox="0 0 900 280"></svg>
+        
+        <!-- Floating Tooltip -->
+        <div id="chartTooltip" class="chart-tooltip">
+          <div class="tooltip-header">
+            <span id="ttDay">Day 0</span>
+            <span id="ttCam" style="color:var(--fg-muted);">Cam</span>
+          </div>
+          <div id="ttRows"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Energy, solar harvest and radio costs are illustrative ESP32-S3 / LoRa simulation parameters.
+      Embedding scores and species labels are from the real Snapshot Serengeti benchmark.
+      Recall counts rare wildlife opportunities missed while the node is powered down or out of daily radio budget.
+    </div>
+
+  </main>
+
+  <script>
+    // --- State & Constants ---
+    const API = new URLSearchParams(location.search).get("api") || "";
+    
+    const CONTROLLERS = {
+      sendall:  { name: "Send everything",  color: "#64748b", desc: "No gating, sends every trigger" },
+      random:   { name: "Random subsample", color: "#db2777", desc: "Uniformly drops events to meet rate" },
+      fixed:    { name: "Fixed threshold",  color: "#d97706", desc: "Static quantile threshold" },
+      battery:  { name: "Battery-only",     color: "#2563eb", desc: "Threshold dynamically scales with battery" },
+      quantile: { name: "Quantile-only",    color: "#7c3aed", desc: "Tracks online score distribution" },
+      full:     { name: "Full controller",  color: "#059669", desc: "Joint battery, budget & score aware" }
+    };
+
+    const PRESETS = {
+      default: { dim: 64, budget: 200, rate: 12, epd: 24, cap: 1500, solar: 130, seed: 1 },
+      "low-solar": { dim: 64, budget: 200, rate: 12, epd: 24, cap: 1200, solar: 50, seed: 1 },
+      "tight-budget": { dim: 16, budget: 60, rate: 6, epd: 24, cap: 1500, solar: 130, seed: 1 },
+      "high-activity": { dim: 64, budget: 350, rate: 25, epd: 48, cap: 2000, solar: 160, seed: 1 }
+    };
+
+    let activeDim = 64;
+    let simData = null;
+    let metaData = null;
+    let activePreset = "default";
+    let sortColumn = "novel_recall";
+    let sortDirection = "desc";
+    let debounceTimer = null;
+    let isolatedCtrl = null;
+    let hoveredCtrl = null;
+
+    // --- DOM Elements ---
+    const dimSegmented = document.getElementById("dimSegmented");
+    const budgetInput = document.getElementById("budget");
+    const rateInput = document.getElementById("rate");
+    const epdInput = document.getElementById("epd");
+    const capInput = document.getElementById("cap");
+    const solarInput = document.getElementById("solar");
+    const seedInput = document.getElementById("seed");
+    const aurocBadge = document.getElementById("aurocBadge");
+    const runBtn = document.getElementById("runBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const autoUpdateCheck = document.getElementById("autoUpdate");
+    const exportBtn = document.getElementById("exportBtn");
+    const statusDot = document.getElementById("statusDot");
+    const statusText = document.getElementById("statusText");
+    const camSelect = document.getElementById("camSelect");
+    const prevCamBtn = document.getElementById("prevCamBtn");
+    const nextCamBtn = document.getElementById("nextCamBtn");
+    const tableBody = document.getElementById("tableBody");
+    const batteryChart = document.getElementById("batteryChart");
+    const chartWrapper = document.getElementById("chartWrapper");
+    const chartTooltip = document.getElementById("chartTooltip");
+    const legendContainer = document.getElementById("legendContainer");
+    
+    // KPI elements
+    const kpiAuroc = document.getElementById("kpiAuroc");
+    const kpiDimLabel = document.getElementById("kpiDimLabel");
+    const kpiRecall = document.getElementById("kpiRecall");
+    const kpiRecallSub = document.getElementById("kpiRecallSub");
+    const kpiOutage = document.getElementById("kpiOutage");
+    const kpiOutageSub = document.getElementById("kpiOutageSub");
+    const kpiBandwidth = document.getElementById("kpiBandwidth");
+
+    // --- Helpers ---
+    const pct = (n, dec = 1) => (100 * n).toFixed(dec) + "%";
+    const num = (n, dec = 1) => Number(n).toFixed(dec);
+
+    function setStatus(text, loading = false) {
+      statusText.textContent = text;
+      if (loading) {
+        statusDot.classList.add("loading");
+      } else {
+        statusDot.classList.remove("loading");
+      }
+    }
+
+    // --- Load Model Meta on Startup ---
+    async function initMeta() {
+      try {
+        const res = await fetch(API + "/api/meta");
+        if (res.ok) {
+          metaData = await res.json();
+          if (metaData.encoder) {
+            document.getElementById("modelEncoder").textContent = metaData.encoder.split(" ")[0];
+          }
+          if (metaData.n_cameras) {
+            document.getElementById("camsCountBadge").textContent = `${metaData.n_cameras} Cameras`;
+          }
+        }
+      } catch (e) {
+        console.warn("Could not load /api/meta, continuing with defaults.");
+      }
+    }
+
+    // --- Simulation Request ---
+    async function runSimulation() {
+      setStatus("Simulating 24 cameras...", true);
+      runBtn.disabled = true;
+
+      const payload = {
+        dim: activeDim,
+        budget: +budgetInput.value,
+        rate: +rateInput.value / 100,
+        epd: +epdInput.value,
+        cap: +capInput.value,
+        solar: +solarInput.value,
+        seed: +seedInput.value
+      };
+
+      try {
+        const res = await fetch(API + "/api/simulate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error("Server returned status " + res.status);
+        simData = await res.json();
+
+        // Populate camera dropdown once if empty
+        if (!camSelect.options.length && simData.cameras) {
+          camSelect.innerHTML = "";
+          simData.cameras.forEach(c => {
+            const opt = document.createElement("option");
+            opt.value = c;
+            opt.textContent = `Camera ${c}`;
+            camSelect.appendChild(opt);
+          });
+        }
+
+        renderKPIs();
+        renderTable();
+        renderLegend();
+        renderChart();
+        setStatus("Ready");
+      } catch (err) {
+        console.error(err);
+        setStatus("Connection error: check backend status");
+      } finally {
+        runBtn.disabled = false;
+      }
+    }
+
+    // --- Render KPI Cards ---
+    function renderKPIs() {
+      if (!simData) return;
+
+      const aurocVal = simData.auroc || (metaData && metaData.test_auroc ? metaData.test_auroc[activeDim + "d"] : 0.766);
+      kpiAuroc.textContent = num(aurocVal, 3);
+      kpiDimLabel.textContent = `${activeDim}d`;
+      aurocBadge.textContent = `AUROC: ${num(aurocVal, 3)}`;
+
+      const fullRes = simData.results.find(r => r.ctrl === "full");
+      const sendAllRes = simData.results.find(r => r.ctrl === "sendall");
+      const bestRecall = [...simData.results].sort((a,b) => b.novel_recall - a.novel_recall)[0];
+
+      if (fullRes) {
+        kpiRecall.textContent = pct(fullRes.novel_recall);
+        kpiRecallSub.textContent = `Best overall: ${bestRecall.name} (${pct(bestRecall.novel_recall)})`;
+
+        const blackoutDiff = sendAllRes ? Math.max(0, sendAllRes.off_pct - fullRes.off_pct) : 0;
+        kpiOutage.textContent = pct(fullRes.off_pct, 0) + " off";
+        kpiOutageSub.textContent = `Saves ${pct(blackoutDiff, 0)} blackout vs send-all`;
+
+        const budgetUsage = Math.round(fullRes.bytes_per_day);
+        const maxBudget = +budgetInput.value;
+        kpiBandwidth.textContent = `${budgetUsage} B/d`;
+      }
+    }
+
+    // --- Render Benchmark Table ---
+    function renderTable() {
+      if (!simData || !simData.results) return;
+
+      const results = [...simData.results];
+      const maxRecall = Math.max(...results.map(r => r.novel_recall));
+
+      results.sort((a, b) => {
+        let va = a[sortColumn];
+        let vb = b[sortColumn];
+        if (typeof va === "string") return sortDirection === "asc" ? va.localeCompare(vb) : vb.localeCompare(va);
+        return sortDirection === "asc" ? va - vb : vb - va;
+      });
+
+      tableBody.innerHTML = results.map(r => {
+        const isFull = r.ctrl === "full";
+        const isWinner = r.novel_recall === maxRecall && maxRecall > 0;
+        const color = CONTROLLERS[r.ctrl] ? CONTROLLERS[r.ctrl].color : "#475569";
+        const recallBarWidth = Math.min(100, Math.round(r.novel_recall * 100));
+        const offBarWidth = Math.min(100, Math.round(r.off_pct * 100));
+
+        return `
+          <tr class="${isFull ? 'full-controller-row' : ''} ${hoveredCtrl === r.ctrl ? 'highlighted' : ''}" 
+              data-ctrl="${r.ctrl}"
+              onmouseenter="highlightController('${r.ctrl}')" 
+              onmouseleave="highlightController(null)">
+            <td>
+              <div class="controller-pill">
+                <span class="ctrl-dot" style="background:${color};"></span>
+                <span>${r.name}</span>
+                ${isWinner ? '<span class="winner-tag">Top Recall</span>' : ''}
+              </div>
+            </td>
+            <td>${num(r.sent_per_day, 1)}</td>
+            <td>${Math.round(r.bytes_per_day)} B</td>
+            <td>
+              <div class="bar-cell">
+                <span>${pct(r.novel_recall)}</span>
+                <span class="mini-track"><span class="mini-fill" style="width:${recallBarWidth}%; background:${color};"></span></span>
+              </div>
+            </td>
+            <td>${pct(r.novel_share)}</td>
+            <td>
+              <div class="bar-cell">
+                <span style="color: ${r.off_pct > 0.05 ? '#ef4444' : 'inherit'};">${pct(r.off_pct, 0)}</span>
+                <span class="mini-track"><span class="mini-fill warning" style="width:${offBarWidth}%;"></span></span>
+              </div>
+            </td>
+            <td>${pct(r.budget_out_pct, 0)}</td>
+          </tr>
+        `;
+      }).join("");
+
+      // Update table sort header arrows
+      document.querySelectorAll("#benchmarkTable th").forEach(th => {
+        const col = th.getAttribute("data-col");
+        const icon = th.querySelector(".sort-icon");
+        if (col === sortColumn) {
+          icon.textContent = sortDirection === "asc" ? "▲" : "▼";
+        } else {
+          icon.textContent = "⇅";
+        }
+      });
+    }
+
+    // --- Interactive Legend Chips ---
+    function renderLegend() {
+      legendContainer.innerHTML = Object.entries(CONTROLLERS).map(([key, item]) => {
+        const isDimmed = isolatedCtrl && isolatedCtrl !== key;
+        const isActive = isolatedCtrl === key;
+        return `
+          <div class="legend-chip ${isActive ? 'active' : ''} ${isDimmed ? 'dimmed' : ''}" 
+               data-ctrl="${key}" 
+               style="${isActive ? `color:${item.color}; border-color:${item.color};` : ''}"
+               onclick="toggleIsolateController('${key}')"
+               onmouseenter="highlightController('${key}')"
+               onmouseleave="highlightController(null)">
+            <span class="legend-color-box" style="background:${item.color};"></span>
+            <span>${item.name}</span>
+          </div>
+        `;
+      }).join("") + `
+        <button class="btn btn-subtle" style="padding:4px 8px; font-size:11px; margin-left:auto;" onclick="resetIsolation()">
+          Show All
+        </button>
+      `;
+    }
+
+    function toggleIsolateController(ctrl) {
+      isolatedCtrl = (isolatedCtrl === ctrl) ? null : ctrl;
+      renderLegend();
+      renderChart();
+    }
+
+    function resetIsolation() {
+      isolatedCtrl = null;
+      hoveredCtrl = null;
+      renderLegend();
+      renderChart();
+      renderTable();
+    }
+
+    function highlightController(ctrl) {
+      hoveredCtrl = ctrl;
+      const rows = document.querySelectorAll("#tableBody tr");
+      rows.forEach(tr => {
+        if (ctrl && tr.getAttribute("data-ctrl") === ctrl) {
+          tr.classList.add("highlighted");
+        } else {
+          tr.classList.remove("highlighted");
+        }
+      });
+      renderChartHighlights();
+    }
+
+    // --- Render Battery SVG Chart ---
+    function renderChart() {
+      if (!simData || !simData.traces) return;
+
+      const activeCam = camSelect.value || (simData.cameras ? simData.cameras[0] : "B03");
+      const camTraces = simData.traces[activeCam] || simData.traces[Object.keys(simData.traces)[0]];
+      if (!camTraces || !camTraces.full) return;
+
+      const numDays = camTraces.full.length;
+      const width = 900;
+      const height = 280;
+      const padLeft = 55;
+      const padRight = 25;
+      const padTop = 20;
+      const padBottom = 35;
+      const plotWidth = width - padLeft - padRight;
+      const plotHeight = height - padTop - padBottom;
+
+      // Coordinate helper
+      const getX = (dayIdx) => padLeft + (dayIdx / Math.max(1, numDays - 1)) * plotWidth;
+      const getY = (val) => padTop + plotHeight - (Math.max(0, Math.min(1, val)) * plotHeight);
+
+      let svgContent = "";
+
+      // Background canvas box
+      svgContent += `
+        <rect x="${padLeft}" y="${padTop}" width="${plotWidth}" height="${plotHeight}" 
+              fill="#fdfdfd" stroke="#e2e8f0" stroke-width="1" rx="4" />
+      `;
+
+      // Horizontal grid lines and Y-axis percentage labels
+      const yTicks = [0, 0.25, 0.5, 0.75, 1.0];
+      yTicks.forEach(tick => {
+        const y = getY(tick);
+        svgContent += `
+          <line x1="${padLeft}" y1="${y}" x2="${width - padRight}" y2="${y}" 
+                stroke="#e2e8f0" stroke-dasharray="${tick === 0 ? '0' : '4,4'}" stroke-width="1"/>
+          <text x="${padLeft - 10}" y="${y + 4}" font-family="var(--sans)" font-size="11" 
+                fill="#64748b" text-anchor="end" font-weight="500">${Math.round(tick * 100)}%</text>
+        `;
+      });
+
+      // X-axis Day labels
+      const step = Math.max(5, Math.floor(numDays / 6));
+      for (let d = 0; d < numDays; d += step) {
+        const x = getX(d);
+        svgContent += `
+          <line x1="${x}" y1="${height - padBottom}" x2="${x}" y2="${height - padBottom + 5}" stroke="#cbd5e1" stroke-width="1"/>
+          <text x="${x}" y="${height - padBottom + 18}" font-family="var(--sans)" font-size="11" 
+                fill="#64748b" text-anchor="middle" font-weight="500">Day ${d}</text>
+        `;
+      }
+
+      // Controller Polylines
+      Object.keys(CONTROLLERS).forEach(k => {
+        const trace = camTraces[k];
+        if (!trace) return;
+
+        const isIsolated = isolatedCtrl && isolatedCtrl === k;
+        const isDimmed = (isolatedCtrl && isolatedCtrl !== k) || (hoveredCtrl && hoveredCtrl !== k);
+        const isHovered = hoveredCtrl === k;
+        const color = CONTROLLERS[k].color;
+        
+        let strokeWidth = 1.6;
+        if (k === "full") strokeWidth = 2.8;
+        if (isHovered || isIsolated) strokeWidth = 3.8;
+
+        let opacity = 0.9;
+        if (isDimmed) opacity = 0.15;
+        if (isHovered || isIsolated) opacity = 1.0;
+
+        const points = trace.map((v, i) => `${getX(i).toFixed(1)},${getY(v).toFixed(1)}`).join(" ");
+
+        svgContent += `
+          <polyline id="line-${k}" fill="none" stroke="${color}" stroke-width="${strokeWidth}" 
+                    stroke-linecap="round" stroke-linejoin="round" opacity="${opacity}" 
+                    points="${points}" />
+        `;
+      });
+
+      // Hover crosshair line (initially hidden)
+      svgContent += `
+        <line id="crosshairLine" x1="0" y1="${padTop}" x2="0" y2="${height - padBottom}" 
+              stroke="#0f172a" stroke-dasharray="3,3" stroke-width="1.2" opacity="0"/>
+      `;
+
+      // Invisible overlay rectangle for capturing pointer events cleanly
+      svgContent += `
+        <rect id="chartOverlay" x="${padLeft}" y="${padTop}" width="${plotWidth}" height="${plotHeight}" 
+              fill="transparent" style="cursor: crosshair; pointer-events: all;"/>
+      `;
+
+      batteryChart.innerHTML = svgContent;
+
+      attachChartInteraction(camTraces, numDays, padLeft, plotWidth, width, height);
+    }
+
+    function renderChartHighlights() {
+      if (!simData) return;
+      Object.keys(CONTROLLERS).forEach(k => {
+        const poly = document.getElementById(`line-${k}`);
+        if (!poly) return;
+        const isHovered = hoveredCtrl === k;
+        const isIsolated = isolatedCtrl === k;
+        const isDimmed = (isolatedCtrl && isolatedCtrl !== k) || (hoveredCtrl && hoveredCtrl !== k);
+
+        let strokeWidth = (k === "full") ? 2.8 : 1.6;
+        if (isHovered || isIsolated) strokeWidth = 3.8;
+
+        let opacity = 0.9;
+        if (isDimmed) opacity = 0.15;
+        if (isHovered || isIsolated) opacity = 1.0;
+
+        poly.setAttribute("stroke-width", strokeWidth);
+        poly.setAttribute("opacity", opacity);
+      });
+    }
+
+    // --- Interactive Chart Crosshair & Hover Tooltip ---
+    function attachChartInteraction(traces, numDays, padLeft, plotWidth, totalW, totalH) {
+      const overlay = document.getElementById("chartOverlay");
+      const crosshair = document.getElementById("crosshairLine");
+      if (!overlay || !crosshair) return;
+
+      overlay.addEventListener("mousemove", (e) => {
+        const rect = batteryChart.getBoundingClientRect();
+        const scaleX = totalW / rect.width;
+        const mouseSvgX = (e.clientX - rect.left) * scaleX;
+
+        // Calculate corresponding day
+        const relX = Math.max(0, Math.min(plotWidth, mouseSvgX - padLeft));
+        const dayIdx = Math.round((relX / plotWidth) * (numDays - 1));
+        const snapSvgX = padLeft + (dayIdx / Math.max(1, numDays - 1)) * plotWidth;
+
+        // Position crosshair
+        crosshair.setAttribute("x1", snapSvgX);
+        crosshair.setAttribute("x2", snapSvgX);
+        crosshair.setAttribute("opacity", "0.6");
+
+        // Position and update tooltip
+        const clientX = e.clientX;
+        const wrapperRect = chartWrapper.getBoundingClientRect();
+        const tooltipX = clientX - wrapperRect.left;
+        const tooltipY = (snapSvgX < totalW / 2) ? 65 : 65;
+
+        chartTooltip.style.left = `${tooltipX}px`;
+        chartTooltip.style.top = `${tooltipY}px`;
+        chartTooltip.classList.add("visible");
+
+        document.getElementById("ttDay").textContent = `Day ${dayIdx} / ${numDays}`;
+        document.getElementById("ttCam").textContent = camSelect.value || "Node";
+
+        const ttRows = document.getElementById("ttRows");
+        ttRows.innerHTML = Object.keys(CONTROLLERS).map(k => {
+          const val = traces[k] ? traces[k][dayIdx] : 0;
+          const pctVal = Math.round((val || 0) * 100);
+          const color = CONTROLLERS[k].color;
+          return `
+            <div class="tooltip-row">
+              <span class="tooltip-label">
+                <span class="ctrl-dot" style="background:${color}; width:7px; height:7px;"></span>
+                <span>${CONTROLLERS[k].name}</span>
+              </span>
+              <span class="tooltip-value">${pctVal}%</span>
+            </div>
+          `;
+        }).join("");
+      });
+
+      overlay.addEventListener("mouseleave", () => {
+        crosshair.setAttribute("opacity", "0");
+        chartTooltip.classList.remove("visible");
+      });
+    }
+
+    // --- Presets Handler ---
+    function applyPreset(presetKey) {
+      const p = PRESETS[presetKey];
+      if (!p) return;
+      activePreset = presetKey;
+
+      activeDim = p.dim;
+      budgetInput.value = p.budget;
+      rateInput.value = p.rate;
+      epdInput.value = p.epd;
+      capInput.value = p.cap;
+      solarInput.value = p.solar;
+      seedInput.value = p.seed;
+
+      // Update preset buttons active state
+      document.querySelectorAll(".preset-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-preset") === presetKey);
+      });
+
+      // Update dim segmented buttons
+      document.querySelectorAll("#dimSegmented .seg-btn").forEach(btn => {
+        btn.classList.toggle("active", +btn.getAttribute("data-dim") === activeDim);
+      });
+
+      runSimulation();
+    }
+
+    // --- Event Listeners ---
+    
+    // Segmented Dim Buttons
+    dimSegmented.addEventListener("click", (e) => {
+      const btn = e.target.closest(".seg-btn");
+      if (!btn) return;
+      const dim = +btn.getAttribute("data-dim");
+      if (dim === activeDim) return;
+      activeDim = dim;
+      document.querySelectorAll("#dimSegmented .seg-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      if (autoUpdateCheck.checked) runSimulation();
+    });
+
+    // Preset Buttons
+    document.querySelectorAll(".preset-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        applyPreset(btn.getAttribute("data-preset"));
+      });
+    });
+
+    // Input changes (auto-update with debounce)
+    const inputs = [budgetInput, rateInput, epdInput, capInput, solarInput, seedInput];
+    inputs.forEach(inp => {
+      inp.addEventListener("input", () => {
+        // Remove preset highlight if customized
+        document.querySelectorAll(".preset-btn").forEach(b => b.classList.remove("active"));
+        if (autoUpdateCheck.checked) {
+          clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(runSimulation, 350);
+        }
+      });
+    });
+
+    // Run Button
+    runBtn.addEventListener("click", runSimulation);
+
+    // Reset Button
+    resetBtn.addEventListener("click", () => {
+      applyPreset("default");
+    });
+
+    // Camera Switcher
+    camSelect.addEventListener("change", () => {
+      renderChart();
+    });
+
+    prevCamBtn.addEventListener("click", () => {
+      if (!camSelect.options.length) return;
+      const idx = camSelect.selectedIndex;
+      camSelect.selectedIndex = (idx > 0) ? idx - 1 : camSelect.options.length - 1;
+      renderChart();
+    });
+
+    nextCamBtn.addEventListener("click", () => {
+      if (!camSelect.options.length) return;
+      const idx = camSelect.selectedIndex;
+      camSelect.selectedIndex = (idx < camSelect.options.length - 1) ? idx + 1 : 0;
+      renderChart();
+    });
+
+    // Table Header Sorting
+    document.querySelectorAll("#benchmarkTable th").forEach(th => {
+      th.addEventListener("click", () => {
+        const col = th.getAttribute("data-col");
+        if (sortColumn === col) {
+          sortDirection = (sortDirection === "desc") ? "asc" : "desc";
+        } else {
+          sortColumn = col;
+          sortDirection = "desc";
+        }
+        renderTable();
+      });
+    });
+
+    // Export Data Button
+    exportBtn.addEventListener("click", () => {
+      if (!simData) return;
+      const jsonStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(simData, null, 2));
+      const a = document.createElement("a");
+      a.setAttribute("href", jsonStr);
+      a.setAttribute("download", `noveltygate_sim_${activeDim}d_seed${seedInput.value}.json`);
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    });
+
+    // --- Initialize ---
+    (async function init() {
+      await initMeta();
+      await runSimulation();
+    })();
+  </script>
+</body>
+</html>

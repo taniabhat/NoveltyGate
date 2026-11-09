@@ -1,0 +1,43 @@
+{
+  "encoder": "facebook/dinov2-small (CLS, frozen)",
+  "projection": "PCA fit on train+warmup",
+  "prototypes": 64,
+  "score": "1 - cosine to nearest prototype",
+  "test_auroc": {
+    "8d": 0.694,
+    "16d": 0.707,
+    "32d": 0.743,
+    "64d": 0.766
+  },
+  "n_events": 24788,
+  "events_per_split": {
+    "test": 16152,
+    "val": 8636
+  },
+  "cameras_test": [
+    "B03",
+    "B04",
+    "B06",
+    "C05",
+    "E04",
+    "G13",
+    "H04",
+    "H05",
+    "H12",
+    "I02",
+    "J10",
+    "K13",
+    "L05",
+    "L08",
+    "L11",
+    "M09",
+    "N02",
+    "N10",
+    "O11",
+    "O12",
+    "P12",
+    "Q12",
+    "T08",
+    "U13"
+  ]
+}
